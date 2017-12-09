@@ -2,8 +2,10 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/photo.hpp>
 #include <iostream>
+#include <sstream>
 
 #include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
 
 using namespace boost::program_options;
 using namespace std;
@@ -58,14 +60,10 @@ int main(int argc, const char **argv)
     vector<Mat> channels;
     split(img, channels);
     Mat red = channels[2];
-    imwrite("0.jpg", img);
-    imwrite("1.jpg", red);
     Mat binary;
     threshold(red, binary, static_cast<double>(epsRouge), 255., THRESH_BINARY);
-    imwrite("2.jpg", binary);
     Mat dilated;
     dilate(binary, dilated, getStructuringElement(MORPH_ELLIPSE, Size(10,10)));
-    imwrite("3.jpg", dilated);
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
     Mat dilatedCpy(dilated.clone());
@@ -83,9 +81,13 @@ int main(int argc, const char **argv)
             drawContours( mask, contours, idx, color, -1, 8 );
         }
     }
-    imwrite("4.jpg", mask);
     Mat res;
     inpaint(img, mask, res, 3, INPAINT_TELEA);
-    imwrite("res.jpg", res);
+    std::stringstream outFile;
+    
+    boost::filesystem::path p(file);
+    outFile << p.parent_path().string() << "/UNDESTED_" << p.filename().string(); 
+    imwrite(outFile.str(), res);
+    std::cout << "result written in : " << outFile.str() << std::endl;
     return 0;
 }

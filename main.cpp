@@ -72,7 +72,6 @@ int main(int argc, const char **argv)
     Scalar color( 255, 255, 255);
     Mat mask(binary.size(), CV_8UC1);
     int tailleMax = binary.size().width*binary.size().height*epsTaille/100.;
-    cout << "Taille max : " << tailleMax << " pixels" << endl;
     for( ; idx < contours.size(); idx++  )
     {
         double area = contourArea(contours[idx]);
@@ -86,8 +85,8 @@ int main(int argc, const char **argv)
     std::stringstream outFile;
     
     boost::filesystem::path p(file);
-    outFile << p.parent_path().string() << "/UNDESTED_" << p.filename().string(); 
+    outFile << p.parent_path().string() << "/UNDUSTED_" << p.filename().string(); 
     imwrite(outFile.str(), res);
-    std::cout << "result written in : " << outFile.str() << std::endl;
+    std::cout << outFile.str() << std::endl;
     return 0;
 }
